@@ -6,10 +6,10 @@ services:
     command:
       - --datadir=/data/geth
       - --networkid=7
-      - --syncmode=full
-      - --gcmode=archive
-      - --history.state=0
-      - --history.transactions=0
+#      - --syncmode=full
+#      - --gcmode=archive
+#      - --history.state=0
+#      - --history.transactions=0
       - --http
       - --http.addr=0.0.0.0
       - --http.api=debug,web3,eth,txpool,net
