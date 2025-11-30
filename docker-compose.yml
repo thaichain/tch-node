@@ -58,7 +58,7 @@ services:
       --discovery-port 9000
       --suggested-fee-recipient=${FEE_RECIPIENT}
       --boot-nodes=${CLNODES}
-      --checkpoint-sync-url=http://159.69.146.230:5052
+      --checkpoint-sync-url=https://cl.thaichain.org
     logging:
       driver: "json-file"
       options:
