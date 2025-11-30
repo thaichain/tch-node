@@ -34,6 +34,9 @@ services:
     image: sigp/lighthouse:v8.0.0
     restart: unless-stopped
     network_mode: "host"
+#    ports:
+#      - "5052:5052"
+#      - "9000:9000"
     volumes:
       - ./data/lighthouse:/root/.lighthouse
       - ./config:/config
@@ -55,9 +58,11 @@ services:
       --discovery-port 9000
       --suggested-fee-recipient=${FEE_RECIPIENT}
       --boot-nodes=${CLNODES}
-      --checkpoint-sync-url=https://cl.thaichain.org
+      --checkpoint-sync-url=http://159.69.146.230:5052
     logging:
       driver: "json-file"
       options:
         max-size: "100m"
         max-file: "10"
+
+#      --allow-insecure-genesis-sync
