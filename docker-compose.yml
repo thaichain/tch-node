@@ -1,0 +1,63 @@
+services:
+  geth:
+    image: ethereum/client-go
+    entrypoint: /root/init-script.sh
+    network_mode: "host"
+    command:
+      - --datadir=/data/geth
+      - --networkid=7
+      - --syncmode=full
+      - --gcmode=archive
+      - --history.state=0
+      - --history.transactions=0
+      - --http
+      - --http.addr=0.0.0.0
+      - --http.api=debug,web3,eth,txpool,net
+      - --http.vhosts="*"
+      - --ws 
+      - --ws.addr=0.0.0.0
+      - --ws.api=debug,web3,eth,txpool,net
+      - --ws.origins="*"
+      - --state.scheme=path 
+      - --db.engine=pebble
+      - --authrpc.port=8551
+      - --authrpc.addr=0.0.0.0
+      - --authrpc.vhosts=*
+      - --authrpc.jwtsecret=/config/jwt.hex
+      - --bootnodes=${ELNODES}
+    volumes:
+      - "./config:/config"
+      - "./data/geth:/data"
+      - "./init-script.sh:/root/init-script.sh"
+
+  beacon:
+    image: sigp/lighthouse:v8.0.0
+    restart: unless-stopped
+    network_mode: "host"
+    volumes:
+      - ./data/lighthouse:/root/.lighthouse
+      - ./config:/config
+    command: >
+      lighthouse beacon_node
+      --testnet-dir /config
+      --datadir /root/.lighthouse
+      --http
+      --http-address 0.0.0.0
+      --http-port 5052
+      --execution-endpoint http://${NODE_PUBLIC_IP}:8551
+      --execution-jwt /config/jwt.hex
+      --enr-udp-port 9000
+      --enr-tcp-port 9000
+      --port 9000
+      --http-allow-origin=*
+      --listen-address=0.0.0.0
+      --enr-address=${NODE_PUBLIC_IP}
+      --discovery-port 9000
+      --suggested-fee-recipient=${FEE_RECIPIENT}
+      --boot-nodes=${CLNODES}
+      --checkpoint-sync-url=https://cl.thaichain.org
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
